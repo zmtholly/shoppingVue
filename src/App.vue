@@ -10,5 +10,7 @@ export default {
 }
 </script>
 
-<style>
+<style lang="stylus">
+  #app
+    background-color #f0f0f0
 </style>

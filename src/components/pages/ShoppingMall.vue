@@ -29,30 +29,95 @@
     <div class="ad-banner">
         <img v-lazy="adBanner.PICTURE_ADDRESS" width="100%">
     </div>
+    <!--Recommend goods area-->
+    <div class="recommend-area">
+      <div class="recommend-title">
+        商品推荐
+      </div>
+      <div class="recommend-body">
+        <!--swiper-->
+        <swiper :options="swiperOption">
+          <swiper-slide v-for=" (item ,index) in recommendGoods" :key="index">
+            <div class="recommend-item">
+              <img :src="item.image" width="80%" />
+              <div>{{item.goodsName}}</div>
+              <div>￥{{item.price | moneyFilter}} (￥{{item.mallPrice | moneyFilter}})</div>
+            </div>
+          </swiper-slide>
+        </swiper>
+      </div>
+    </div>
+    <floor-component :floorData="floor1" :floorTitle="floorName.floor1"></floor-component>
+    <floor-component :floorData="floor2" :floorTitle="floorName.floor2"></floor-component>
+    <floor-component :floorData="floor3" :floorTitle="floorName.floor3"></floor-component>
+    <!--Hot Area-->
+    <div class="hot-area">
+      <div class="hot-title">热卖商品</div>
+      <div class="hot-goods">
+        <van-list>
+          <van-row gutter="20">
+            <van-col span="12" v-for="(item,index) in hotGoods" :key="index">
+              <goods-info :goodsImage="item.image" :goodsName="item.name" :goodsPrice="item.price" :goodsMall="item.mallPrice"></goods-info>
+            </van-col>
+          </van-row>
+        </van-list>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 import axios from 'axios'
+import 'swiper/dist/css/swiper.css'
+import { swiper, swiperSlide } from 'vue-awesome-swiper'
+import floorComponent from '../component/floorComponent'
+import goodsInfo from '../component/goodsInfoComponent'
+import { toMoney } from '../filter/moneyFilter.js'
+import url from '@/serviceAPI.config.js'
 export default {
   data () {
     return {
-      msg: 'Shopping Mall',
       bannerPicArray: [],
       category: [],
-      adBanner: []
+      adBanner: '',
+      recommendGoods: [],
+      swiperOption: {
+        slidesPerView: 3
+      },
+      floor1: [],
+      floor2: [],
+      floor3: [],
+      floorName: {},
+      hotGoods: [] // 热卖商品
+    }
+  },
+  components: {
+    swiper,
+    swiperSlide,
+    floorComponent,
+    goodsInfo
+  },
+  filters: {
+    moneyFilter (money) {
+      return toMoney(money)
     }
   },
   created () {
     axios({
-      url: 'https://www.easy-mock.com/mock/5b8510a699996c76f26f7207/shoppingVue/index',
+      url: url.getShoppingMallInfo,
       method: 'get'
     }).then(response => {
       console.log(response)
       if (response.status === 200) {
         this.bannerPicArray = response.data.data.slides
         this.category = response.data.data.category
-        this.adBanner = response.data.data.advertesPicture //获得广告图片
+        this.adBanner = response.data.data.advertesPicture
+        this.recommendGoods = response.data.data.recommend
+        this.floorName = response.data.data.floorName
+        this.floor1 = response.data.data.floor1
+        this.floor2 = response.data.data.floor2
+        this.floor3 = response.data.data.floor3
+        this.hotGoods = response.data.data.hotGoods
       }
     }).catch(error => {
       console.log(error)
@@ -97,4 +162,30 @@ export default {
       padding .3rem
       font-size 12px
       text-align center
+      flex 1
+   .recommend-area
+      background-color #fff
+      margin-top .3rem
+      .recommend-title
+        border-bottom 1px solid #eee
+        font-size 14px
+        padding .2rem
+        color #e5017d
+      .recommend-body
+        border-bottom 1px solid #eeeeee
+        .recommend-item
+          width 100%
+          border-right 1px solid #eee
+          font-size 12px
+          text-align center
+          box-sizing border-box
+    .hot-area
+      text-align center
+      font-size 14px
+      height 1.8rem
+      line-height 1.8rem
+      .hot-goods
+        height 130rem
+        overflow hidden
+        background-color #ffffff
 </style>
