@@ -11,10 +11,15 @@
 <script>
 import { toMoney } from '../filter/moneyFilter.js'
 export default {
-  props: ['goodsImage', 'goodsName', 'goodsPrice', 'goodsMall'],
+  props: ['goodsImage', 'goodsName', 'goodsPrice', 'goodsMall', 'goodsId'],
   filters: {
     moneyFilter (money) {
       return toMoney(money)
+    }
+  },
+  methods: {
+    goGoodsPage () {
+      this.$router.push({path: '/goods', query: {goodsId: this.goodsId}})
     }
   }
 }

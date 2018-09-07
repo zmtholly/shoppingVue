@@ -13,6 +13,7 @@
         placeholder="请输入用户名"
         clearable
         required
+        :error-message="userNameErrorMsg"
       />
       <van-field
         v-model="password"
@@ -21,9 +22,10 @@
         placeholder="请输入密码"
         clearable
         required
+        :error-message="passwordErrorMsg"
       />
       <div class="register-button">
-        <van-button type="primary" size="large" @click="axiosRegisterUser" :loading="openLoading">注册</van-button>
+        <van-button type="primary" size="large" @click="registerAction" :loading="openLoading">注册</van-button>
       </div>
     </div>
   </div>
@@ -38,12 +40,34 @@ export default {
     return {
       userName: '',
       password: '',
-      openLoading: false // 是否开启用户的Loading
+      openLoading: false, // 是否开启用户的Loading
+      userNameErrorMsg: '', // 当用户名出现错误的时候
+      passwordErrorMsg: '' // 当密码出现错误的时候
     }
   },
   methods: {
     goBack () {
       this.$router.go(-1)
+    },
+    // 表单验证方法
+    checkForm () {
+      let isOk = true
+      if (this.userName.length < 5) {
+        this.userNameErrorMsg = '用户名不能少于5位'
+        isOk = false
+      } else {
+        this.userNameErrorMsg = ''
+      }
+      if (this.password.length < 6) {
+        this.passwordErrorMsg = '密码不能少于6位'
+        isOk = false
+      } else {
+        this.passwordErrorMsg = ''
+      }
+      return isOk
+    },
+    registerAction () {
+      this.checkForm() && this.axiosRegisterUser()
     },
     axiosRegisterUser () {
       this.openLoading = true
