@@ -1,6 +1,6 @@
 # shopping
 
-> A Vue.js project
+> A Vue.js project koa2+vue 商城项目
 
 ## Build Setup
 
