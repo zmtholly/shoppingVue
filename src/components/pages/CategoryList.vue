@@ -146,7 +146,6 @@ export default {
           page: this.page
         }
       }).then(response => {
-        // console.log(response)
         if (response.data.code === 200 && response.data.message.length) {
           this.page++
           this.goodList = this.goodList.concat(response.data.message)
